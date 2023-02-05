@@ -19,9 +19,12 @@ fi
 
 case "$ARR_TYPE" in
     radarr)
-        BACKUP_URI=$(curl -s "$ARR_HOST/api/v3/system/backup?apiKey=${API_KEY}" | jq -r '. |= sort_by(.time) | last | .path')
-        echo "BACKUP_URI: $BACKUP_URI"
+        echo "$ARR_TYPE detected!"
+        echo "Getting backup URL"
+        BACKUP_URI=$(curl -s "${ARR_HOST}/api/v3/system/backup?apiKey=${API_KEY}" | jq -r '. |= sort_by(.time) | last | .path')
+        echo "BACKUP_URI: ${BACKUP_URI}"
         BACKUP_FILE=$(echo ${BACKUP_URI} | awk -F/ '{print $NF}')
+        echo "BACKUP_FILE: ${BACKUP_FILE}"
         ;;
     *)
         echo "This ARR_TYPE is not supported (yet)"
@@ -30,4 +33,5 @@ esac
 
 echo "Downloading ${BACKUP_FILE}"
 curl -qso /backups/${BACKUP_FILE} "${ARR_HOST}${BACKUP_URI}?apiKey=${API_KEY}"
+echo "Uploading to $S3_HOST"
 $minioclient cp ${BACKUP_FILE} backupstore/arrstack-backups
