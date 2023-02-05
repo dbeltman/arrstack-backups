@@ -1,9 +1,9 @@
-FROM ubuntu:focal
+FROM alpine:3.17
 
 WORKDIR /backups
 
-RUN apt update && apt install -y curl jq gawk && \
-curl https://dl.min.io/client/mc/release/linux-arm64/mc \
+RUN apk -q add curl jq gawk && \
+curl https://dl.min.io/client/mc/release/linux-amd64/mc \
   --create-dirs \
   -o $HOME/minio-binaries/mc && \
 chmod +x $HOME/minio-binaries/mc && \
