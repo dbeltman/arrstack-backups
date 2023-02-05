@@ -7,6 +7,7 @@ fi
 
 set -e
 
+
 BACKUP_RETENTION=${BACKUP_RETENTION:-30}
 minioclient=$HOME/minio-binaries/mc
 $minioclient alias set backupstore $S3_HOST $S3_ACCESSKEY $S3_SECRETKEY
@@ -21,7 +22,7 @@ case "$ARR_TYPE" in
     radarr)
         echo "$ARR_TYPE detected!"
         echo "Getting backup URL"
-        BACKUP_URI=$(curl -s "${ARR_HOST}/api/v3/system/backup?apiKey=${API_KEY}" | jq -r '. |= sort_by(.time) | last | .path')
+        BACKUP_URI=$(curl -fs "${ARR_HOST}/api/v3/system/backup?apiKey=${API_KEY}" | jq -r '. |= sort_by(.time) | last | .path')
         echo "BACKUP_URI: ${BACKUP_URI}"
         BACKUP_FILE=$(echo ${BACKUP_URI} | awk -F/ '{print $NF}')
         echo "BACKUP_FILE: ${BACKUP_FILE}"
