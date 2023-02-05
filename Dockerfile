@@ -5,8 +5,9 @@ WORKDIR /backups
 RUN apk -q add curl jq gawk && \
 curl https://dl.min.io/client/mc/release/linux-arm64/mc \
   --create-dirs \
-  -o /usr/bin/mc && \
-chmod +x /usr/bin/mc
+  -o $HOME/minio-binaries/mc && \
+chmod +x $HOME/minio-binaries/mc && \
+export PATH=$PATH:$HOME/minio-binaries/
 
 COPY entrypoint.sh entrypoint.sh
 

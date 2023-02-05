@@ -8,13 +8,13 @@ fi
 set -e
 
 BACKUP_RETENTION=${BACKUP_RETENTION:-30}
-
-mc alias set backupstore $S3_HOST $S3_ACCESSKEY $S3_SECRETKEY
-if mc ls backupstore/arrstack-backups; then
+minioclient=$HOME/minio-binaries/mc
+$minioclient alias set backupstore $S3_HOST $S3_ACCESSKEY $S3_SECRETKEY
+if $minioclient ls backupstore/arrstack-backups; then
     echo "Bucket already exists"
 else
     echo "Creating bucket"
-    mc mb backupstore/arrstack-backups
+    $minioclient mb backupstore/arrstack-backups
 fi
 
 case "$ARR_TYPE" in
@@ -30,4 +30,4 @@ esac
 
 echo "Downloading ${BACKUP_FILE}"
 curl -qso /backups/${BACKUP_FILE} "${ARR_HOST}${BACKUP_URI}?apiKey=${API_KEY}"
-mc cp ${BACKUP_FILE} backupstore/arrstack-backups
+$minioclient cp ${BACKUP_FILE} backupstore/arrstack-backups
