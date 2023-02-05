@@ -5,6 +5,12 @@ if [ -z ${API_KEY} ] || [ -z ${ARR_HOST} ] || [ -z ${ARR_TYPE} ] || [ -z $S3_HOS
 	exit 1
 fi
 
+curl https://dl.min.io/client/mc/release/linux-arm64/mc \
+  --create-dirs \
+  -o $HOME/minio-binaries/mc
+chmod +x $HOME/minio-binaries/mc
+export PATH=$PATH:$HOME/minio-binaries/
+
 set -e
 
 BACKUP_RETENTION=${BACKUP_RETENTION:-30}
