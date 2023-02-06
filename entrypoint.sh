@@ -40,7 +40,7 @@ case "$ARR_TYPE" in
 esac
 BACKUP_FILE=$(echo ${BACKUP_URI} | awk -F/ '{print $NF}')
 echo "BACKUP_FILE: ${BACKUP_FILE}"
-echo "Downloading ${BACKUP_FILE}"
+echo "Downloading ${BACKUP_DOWNLOAD_URI}"
 case "$ARR_TYPE" in
     radarr | sonarr | prowlarr)
         curl -fo /backups/${BACKUP_FILE} "${BACKUP_DOWNLOAD_URI}"
