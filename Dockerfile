@@ -2,7 +2,7 @@ FROM alpine:3.17
 
 WORKDIR /backups
 
-RUN apk -q add curl jq gawk && \
+RUN apk -q add curl jq gawk file && \
 curl https://dl.min.io/client/mc/release/linux-amd64/mc \
   --create-dirs \
   -o $HOME/minio-binaries/mc && \
