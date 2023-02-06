@@ -1,6 +1,6 @@
 #!/usr/bin/env sh
 
-if [ -z ${API_KEY} ] || [ -z ${ARR_HOST} ] || [ -z ${ARR_TYPE} ] || [ -z $S3_HOST ] || [ -z $S3_ACCESSKEY ] || [ -z $S3_SECRETKEY ]; then
+if [ -z ${API_KEY} ] || [ -z ${ARR_HOST} ] || [ -z ${ARR_TYPE} ] || [ -z $S3_HOST ] || [ -z $S3_ACCESSKEY ] || [ -z $S3_SECRETKEY ] || [ -z $BUCKET_NAME ]; then
 	echo "Missing envs!"
 	exit 1
 fi
@@ -13,11 +13,11 @@ fi
 BACKUP_RETENTION=${BACKUP_RETENTION:-30}
 minioclient=$HOME/minio-binaries/mc
 $minioclient alias set backupstore $S3_HOST $S3_ACCESSKEY $S3_SECRETKEY
-if $minioclient ls backupstore/arrstack-backups; then
+if $minioclient ls backupstore/$BUCKET_NAME; then
     echo "Bucket already exists"
 else
     echo "Creating bucket"
-    $minioclient mb backupstore/arrstack-backups
+    $minioclient mb backupstore/$BUCKET_NAME
 fi
 
 echo "$ARR_TYPE detected!"
@@ -52,4 +52,4 @@ case "$ARR_TYPE" in
         echo "This ARR_TYPE is not supported (yet)"
 esac
 echo "Uploading to $S3_HOST"
-$minioclient cp /backups/${BACKUP_FILE} backupstore/arrstack-backups
+$minioclient cp /backups/${BACKUP_FILE} backupstore/$BUCKET_NAME
