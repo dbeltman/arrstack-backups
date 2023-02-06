@@ -46,10 +46,28 @@ case "$ARR_TYPE" in
         curl -fo /backups/${BACKUP_FILE} "${BACKUP_DOWNLOAD_URI}"
         ;;
     bazarr)
-        curl -H "X-API-KEY: ${API_KEY}" -fo /backups/${BACKUP_FILE} "${BACKUP_DOWNLOAD_URI}"
+        curl -fH "X-API-KEY: ${API_KEY}" -fo /backups/${BACKUP_FILE} "${BACKUP_DOWNLOAD_URI}"
         ;;
     *)
         echo "This ARR_TYPE is not supported (yet)"
 esac
 echo "Uploading to $S3_HOST"
+filetype=$(file $BACKUP_FILE | cut -d ":" -f 2 | xargs)
+case $filetype in
+    Zip*)
+        echo "[INFO] Zip archive found!"
+        ;;
+    HTML*)
+        echo "[ERROR] HTML file found. Check backup url"
+        exit 1
+        ;;
+    empty)
+        echo "[ERROR] Empty file found. Check backup url"
+        exit 1
+        ;;
+    *)
+        echo "[ERROR] Unknown file type, check backup url/settings."
+        exit 1
+        ;;
+esac
 $minioclient cp /backups/${BACKUP_FILE} backupstore/$BUCKET_NAME
