@@ -24,7 +24,7 @@ echo "[INFO] $ARR_TYPE detected!, generating backup URL"
 case "$ARR_TYPE" in
     radarr | sonarr)
         BACKUP_URI=$(curl -H "X-Api-Key: ${API_KEY}" -fs "${ARR_HOST}/api/v3/system/backup" | jq -r '. |= sort_by(.time) | last | .path')        
-        BACKUP_DOWNLOAD_URI=${ARR_HOST}${BACKUP_URI}?apiKey=${API_KEY}
+        BACKUP_DOWNLOAD_URI=${ARR_HOST}${BACKUP_URI}
         ;;
     prowlarr)
         BACKUP_URI=$(curl -H "X-Api-Key: ${API_KEY}" -fs "${ARR_HOST}/api/v1/system/backup" | jq -r '. |= sort_by(.time) | last | .path')        
