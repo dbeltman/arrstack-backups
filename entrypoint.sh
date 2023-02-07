@@ -23,12 +23,12 @@ fi
 echo "[INFO] $ARR_TYPE detected!, generating backup URL"
 case "$ARR_TYPE" in
     radarr | sonarr)
-        BACKUP_URI=$(curl -fs "${ARR_HOST}/api/v3/system/backup?apiKey=${API_KEY}" | jq -r '. |= sort_by(.time) | last | .path')        
+        BACKUP_URI=$(curl -H "X-Api-Key: ${API_KEY}" -fs "${ARR_HOST}/api/v3/system/backup" | jq -r '. |= sort_by(.time) | last | .path')        
         BACKUP_DOWNLOAD_URI=${ARR_HOST}${BACKUP_URI}?apiKey=${API_KEY}
         ;;
     prowlarr)
-        BACKUP_URI=$(curl -fs "${ARR_HOST}/api/v1/system/backup?apiKey=${API_KEY}" | jq -r '. |= sort_by(.time) | last | .path')        
-        BACKUP_DOWNLOAD_URI=${ARR_HOST}${BACKUP_URI}?apiKey=${API_KEY}
+        BACKUP_URI=$(curl -H "X-Api-Key: ${API_KEY}" -fs "${ARR_HOST}/api/v1/system/backup" | jq -r '. |= sort_by(.time) | last | .path')        
+        BACKUP_DOWNLOAD_URI=${ARR_HOST}${BACKUP_URI}
         ;;        
     bazarr)
         BACKUP_URI=$(curl -H "X-API-KEY: ${API_KEY}" -fs "${ARR_HOST}/api/system/backups" | jq -r '.data | .[length -1].filename')
@@ -43,10 +43,10 @@ echo "[INFO] BACKUP_FILE: ${BACKUP_FILE}"
 echo "[INFO] Downloading ${BACKUP_DOWNLOAD_URI}"
 case "$ARR_TYPE" in
     radarr | sonarr | prowlarr)
-        curl -fo /backups/${BACKUP_FILE} "${BACKUP_DOWNLOAD_URI}"
+        curl -H "X-Api-Key: ${API_KEY}" -fo /backups/${BACKUP_FILE} "${BACKUP_DOWNLOAD_URI}"
         ;;
     bazarr)
-        curl -fH "X-API-KEY: ${API_KEY}" -fo /backups/${BACKUP_FILE} "${BACKUP_DOWNLOAD_URI}"
+        curl -H "X-API-KEY: ${API_KEY}" -fo /backups/${BACKUP_FILE} "${BACKUP_DOWNLOAD_URI}"
         ;;
     *)
         echo "[ERROR] This ARR_TYPE is not supported (yet)"

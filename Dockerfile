@@ -12,6 +12,6 @@ export PATH=$PATH:$HOME/minio-binaries/
 COPY entrypoint.sh entrypoint.sh
 
 RUN chmod +x entrypoint.sh
-
+# CMD [ "sleep","infinity" ]
 ENTRYPOINT ["./entrypoint.sh"]
 
