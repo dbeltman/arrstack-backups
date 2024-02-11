@@ -23,7 +23,15 @@ fi
 echo "[INFO] $ARR_TYPE detected!, generating backup URL"
 case "$ARR_TYPE" in
     radarr | sonarr)
-        BACKUP_URI=$(curl -H "X-Api-Key: ${API_KEY}" -fs "${ARR_HOST}/api/v3/system/backup" | jq -r '. |= sort_by(.time) | last | .path')        
+        BACKUP_URI=$(curl -H "X-Api-Key: ${API_KEY}" -fs "${ARR_HOST}/api/v3/system/backup" | jq -r '. |= sort_by(.time) | last | .path')  
+	curl -X 'POST' "${ARR_HOST}/login" \
+		-H 'accept: */*' \
+		-H "X-Api-Key: ${API_KEY}" \
+		-H 'Content-Type: multipart/form-data' \
+		-F  "username=${USERNAME}" \
+  		-F "password=${PASSWORD}" \
+		-F "rememberMe= "
+  		-c cookies.txt
         BACKUP_DOWNLOAD_URI=${ARR_HOST}${BACKUP_URI}
         ;;
     prowlarr)
@@ -43,10 +51,10 @@ echo "[INFO] BACKUP_FILE: ${BACKUP_FILE}"
 echo "[INFO] Downloading ${BACKUP_DOWNLOAD_URI}"
 case "$ARR_TYPE" in
     radarr | sonarr | prowlarr)
-        curl -H "X-Api-Key: ${API_KEY}" -fo /backups/${BACKUP_FILE} "${BACKUP_DOWNLOAD_URI}"
+        curl -b cookies.txt -H "X-Api-Key: ${API_KEY}" -fo /backups/${BACKUP_FILE} "${BACKUP_DOWNLOAD_URI}"
         ;;
     bazarr)
-        curl -H "X-API-KEY: ${API_KEY}" -fo /backups/${BACKUP_FILE} "${BACKUP_DOWNLOAD_URI}"
+        curl -b cookies.txt -H "X-API-KEY: ${API_KEY}" -fo /backups/${BACKUP_FILE} "${BACKUP_DOWNLOAD_URI}"
         ;;
     *)
         echo "[ERROR] This ARR_TYPE is not supported (yet)"
