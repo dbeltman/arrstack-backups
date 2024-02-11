@@ -30,7 +30,7 @@ case "$ARR_TYPE" in
 		-H 'Content-Type: multipart/form-data' \
 		-F  "username=${USERNAME}" \
   		-F "password=${PASSWORD}" \
-		-F "rememberMe= "
+		-F "rememberMe= " \
   		-c cookies.txt
         BACKUP_DOWNLOAD_URI=${ARR_HOST}${BACKUP_URI}
         ;;
